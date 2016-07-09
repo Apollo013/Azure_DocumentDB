@@ -2,7 +2,9 @@
 A console app demonstrating how to create a database and a collection, and upload json files in DocumentDB.
 
 ---
+
 Developed with VS2015 Community
+
 ---
 
 ####Features
