@@ -1,5 +1,5 @@
 # Azure_DocumentDB
-Demonstrates how to manage a DocumentDB database with a C# console app.
+Demonstrates how to manage a DocumentDB database from a C# console app.
 
 ---
 
