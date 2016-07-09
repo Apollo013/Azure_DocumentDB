@@ -1,5 +1,5 @@
 # Azure_DocumentDB
-A console app demonstrating how to create a database and a collection, and upload json files in DocumentDB.
+Demonstrates how to manage a DocumentDB database with a C# console app.
 
 ---
 
