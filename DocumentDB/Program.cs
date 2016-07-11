@@ -174,6 +174,12 @@ namespace DocumentDB
             }
         }
 
+        /// <summary>
+        /// Executes a predefined query
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="collectionName"></param>
+        /// <returns></returns>
         private async Task ExecuteQuery(string dbName, string collectionName)
         {            
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = 100 };
@@ -230,6 +236,13 @@ namespace DocumentDB
             */
         }
 
+        /// <summary>
+        /// Replaces details of a document
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="family"></param>
+        /// <returns></returns>
         private async Task ReplaceDocument(string dbName, string collectionName, Family family)
         {
             try
@@ -243,6 +256,13 @@ namespace DocumentDB
             }
         }
 
+        /// <summary>
+        /// Removes a Document
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="documentName"></param>
+        /// <returns></returns>
         private async Task RemoveDocument(string dbName, string collectionName, string documentName)
         {
             try
