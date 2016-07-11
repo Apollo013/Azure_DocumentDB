@@ -54,23 +54,21 @@ namespace DocumentDB
             PrintSubTitle("Creating Client");
             this.client = new DocumentClient(new Uri(EndpointUri), PrimaryKey);
 
-            Task.Factory.StartNew(async () => { await this.CreateDatabaseAsync("FamilyDB"); })                
-                .ContinueWith(async (ante) => { await this.CreateCollectionAsync("FamilyDB", "FamilyCollection"); })
-                .ContinueWith(async (ante) => { await this.CreateFamilyDocument("FamilyDB", "FamilyCollection", CreateAndersonFamily()); })
-                .ContinueWith(async (ante) => { await this.CreateFamilyDocument("FamilyDB", "FamilyCollection", CreateWakefieldFamily()); })
-                .ContinueWith(async (ante) => { await this.ExecuteQuery("FamilyDB", "FamilyCollection"); })
-                .ContinueWith(async (ante) => {
-                    Family family = CreateAndersonFamily();
-                    family.Children[0].Grade = 6;
-                    await this.ReplaceDocument("FamilyDB", "FamilyCollection", family); 
-                })
-                .ContinueWith(async (ante) => { await this.ExecuteQuery("FamilyDB", "FamilyCollection"); })
-                .ContinueWith(async (ante) => {
-                    Family family = CreateAndersonFamily();
-                    await this.RemoveDocument("FamilyDB", "FamilyCollection", family.Id);
-                })
-                .ContinueWith(async (ante) => { await this.ExecuteQuery("FamilyDB", "FamilyCollection"); })
-                .Wait();
+            this.CreateDatabaseAsync("FamilyDB").Wait();
+            this.CreateCollectionAsync("FamilyDB", "FamilyCollection").Wait();
+            this.CreateFamilyDocument("FamilyDB", "FamilyCollection", CreateAndersonFamily()).Wait();
+            this.CreateFamilyDocument("FamilyDB", "FamilyCollection", CreateWakefieldFamily()).Wait();
+            this.ExecuteQuery("FamilyDB", "FamilyCollection").Wait();
+
+            Family family = CreateAndersonFamily();
+            family.Children[0].Grade = 6;
+            this.ReplaceDocument("FamilyDB", "FamilyCollection", family).Wait();
+
+            this.ExecuteQuery("FamilyDB", "FamilyCollection").Wait();
+
+            this.RemoveDocument("FamilyDB", "FamilyCollection", family.Id).Wait();
+
+            this.ExecuteQuery("FamilyDB", "FamilyCollection").Wait();
         }
 
 
@@ -217,6 +215,10 @@ namespace DocumentDB
                 {
                     Family doc = family.Single();
                     this.PrintSubTitle($"Running Query Asynchronously: {doc.Id}");
+                }
+                else
+                {
+                    this.PrintSubTitle($"Nothing Found");
                 }
             }
             
