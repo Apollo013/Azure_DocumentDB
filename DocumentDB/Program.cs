@@ -49,12 +49,10 @@ namespace DocumentDB
         /// Creates a new Document Client Object, Database, Collection and 2 documents
         /// </summary>
         /// <returns></returns>
-        private Task CreateClient()
+        private void CreateClient()
         {
             PrintSubTitle("Creating Client");
             this.client = new DocumentClient(new Uri(EndpointUri), PrimaryKey);
-
-            Task t1 = this.CreateDatabaseAsync("FamilyDB");
 
             Task.Factory.StartNew(async () => { await this.CreateDatabaseAsync("FamilyDB"); })                
                 .ContinueWith(async (ante) => { await this.CreateCollectionAsync("FamilyDB", "FamilyCollection"); })
