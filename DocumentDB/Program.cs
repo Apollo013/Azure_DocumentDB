@@ -14,14 +14,14 @@ namespace DocumentDB
     /// </summary>
     class Program
     {
-        
+
         // These settings should be stored in app settings
-        private const string EndpointUri = "https://docdbtestire.documents.azure.com:443/";
-        private const string PrimaryKey = "1Y0MhD32YUl2mmeNSe6m8gfAwxog93NVe2yVNzHUdwuYQ5n2qDzTeZLMkAHJPmp4cibAiT6Spm3SmoveXT9qIg==";
+        private const string EndpointUri = "[ENTER_ENPOINT_URL_HERE]";
+        private const string PrimaryKey = "[ENTER_PRIMARY_KEY_HERE";
         private DocumentClient client;
 
         static void Main(string[] args)
-        {            
+        {
             try
             {
                 Program p = new Program();
@@ -69,9 +69,23 @@ namespace DocumentDB
             this.RemoveDocument("FamilyDB", "FamilyCollection", family.Id).Wait();
 
             this.ExecuteQuery("FamilyDB", "FamilyCollection").Wait();
+
         }
 
 
+        private async Task DeleteDatabase(string databaseName)
+        {
+            Database database = client
+            .CreateDatabaseQuery()
+            .Where((d) => d.Id == databaseName)
+            .AsEnumerable()
+            .First();
+            if (database != null)
+            {
+                await client.DeleteDatabaseAsync(database.SelfLink);
+            }
+            PrintSubTitle("Deleted");
+        }
 
         /// <summary>
         /// Creates a database (checks first if it exists)
@@ -79,7 +93,7 @@ namespace DocumentDB
         /// <param name="dbName"></param>
         /// <returns></returns>
         private async Task CreateDatabaseAsync(string dbName)
-        {            
+        {
             try
             {
                 // Try to read from the database first
@@ -90,7 +104,7 @@ namespace DocumentDB
             catch (DocumentClientException ex)
             {
                 // Create the database if it does not exist
-                if(ex.StatusCode == HttpStatusCode.NotFound)
+                if (ex.StatusCode == HttpStatusCode.NotFound)
                 {
                     await this.client.CreateDatabaseAsync(new Database { Id = dbName });
                     PrintSubTitle("Database");
@@ -111,7 +125,7 @@ namespace DocumentDB
         /// <returns></returns>
         private async Task CreateCollectionAsync(string dbName, string collectionName)
         {
-            
+
             try
             {
                 await this.client.ReadDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(dbName, collectionName));
@@ -121,7 +135,7 @@ namespace DocumentDB
             catch (DocumentClientException ex)
             {
                 // Create the collection if it does not exist
-                if(ex.StatusCode == HttpStatusCode.NotFound)
+                if (ex.StatusCode == HttpStatusCode.NotFound)
                 {
                     DocumentCollection dc = new DocumentCollection();
                     dc.Id = collectionName;
@@ -150,7 +164,7 @@ namespace DocumentDB
         /// <param name="family"></param>
         /// <returns></returns>
         private async Task CreateFamilyDocument(string dbName, string collectionName, Family family)
-        {            
+        {
             try
             {
                 await this.client.ReadDocumentAsync(UriFactory.CreateDocumentUri(dbName, collectionName, family.Id));
@@ -179,7 +193,7 @@ namespace DocumentDB
         /// <param name="collectionName"></param>
         /// <returns></returns>
         private async Task ExecuteQuery(string dbName, string collectionName)
-        {            
+        {
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = 100 };
 
             // -------------------------------------------------------       
@@ -200,7 +214,7 @@ namespace DocumentDB
             // -------------------------------------------------------       
             // ASYNCHRONOUS     
             // -------------------------------------------------------   
-                
+
             IDocumentQuery<Family> familyQueryAsync = (from family in this.client.CreateDocumentQuery<Family>(UriFactory.CreateDocumentCollectionUri(dbName, collectionName), queryOptions)
                                                        where family.LastName == "Andersen"
                                                        select family)
@@ -221,7 +235,7 @@ namespace DocumentDB
                     this.PrintSubTitle($"Nothing Found");
                 }
             }
-            
+
             // -------------------------------------------------------       
             // DIRECT SQL    
             // -------------------------------------------------------               
@@ -252,7 +266,7 @@ namespace DocumentDB
                 await this.client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(dbName, collectionName, family.Id), family);
                 this.PrintSubTitle($"Document Replaced: {family.Id}");
             }
-            catch(DocumentClientException ex)
+            catch (DocumentClientException ex)
             {
                 throw;
             }
@@ -358,7 +372,7 @@ namespace DocumentDB
             //Console.WriteLine("Press any key to continue ...");
             //Console.ReadKey();
         }
-        
+
         private void PrintTitle(string title)
         {
             Console.WriteLine("\n");
