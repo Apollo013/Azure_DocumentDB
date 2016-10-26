@@ -1,4 +1,5 @@
-# Azure_DocumentDB
+# NoSql_DocumentDB
+
 Demonstrates how to manage a DocumentDB database from a C# console app.
 
 ---
